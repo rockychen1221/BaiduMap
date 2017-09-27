@@ -2637,6 +2637,14 @@ div.BMap_cmLstItem {
 		local.search($("#sole-input").val());
 	});
 
+	
+	//回车查询事件
+	$('#sole-input').keydown(function(e) {
+		if (e.keyCode == 13) {
+			local.search($("#sole-input").val());//处理事件
+		}
+	});
+	
 	/**
 	分页
 	 */
