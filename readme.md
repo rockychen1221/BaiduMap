@@ -8,7 +8,7 @@
 * `加入城市选择模块和查询回车事件`
 
 
-##演示地址 [Demo](htmlpreview.github.com/?https://github.com/RockyGang/BaiduMap/blob/master/index.html)
+##演示地址 [Demo](http://htmlpreview.github.io/?https://github.com/twbs/bootstrap/blob/gh-pages/2.3.2/index.html)
 如不能跳转请打开github上demo网页index.html，在URL前加入htmlpreview.github.com/? 然后就可以访问预览了
 
 ##有问题反馈
