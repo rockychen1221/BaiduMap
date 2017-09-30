@@ -72,6 +72,9 @@
 	// }
 	}));
 
+
+
+
 	//设置默认城市为北京，自动定位到当前城市
 	var point = new BMap.Point(116.331398,39.897445);
 	map.centerAndZoom(point,12);
@@ -206,7 +209,10 @@
 		content += '</table>';
 		content += '</div>';
 
-		map.centerAndZoom(marker.point, 12);
+		//map.centerAndZoom(marker.point, 12);
+
+    map.panTo(marker.point);
+
 		var infoWindow = new BMap.InfoWindow(content, opts); // 创建信息窗口对象
 		marker.openInfoWindow(infoWindow); //开启信息窗口
 
@@ -471,6 +477,8 @@
 	$(".input-clear").on("click", function() {
 		$("#sole-input").val("");
 		map.clearOverlays(); //清除地图上所有覆盖物
+
+		//map.reset();
 		myCity.get(Fun); // 初始化地图,设置城市和地图级别。
 		$("#cards-level1").html("");
 		$(this).hide();
