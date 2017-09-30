@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Baidu Map Demo</title> 
+<title>Baidu Map Demo</title>
 
 <link rel="stylesheet" href="css/index.css" type="text/css" />
 <link rel="stylesheet" href="css/searchPanel.css" type="text/css" />
@@ -148,28 +148,28 @@
 
 		//var p = e.target;
 		//var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-		var infoWindow = new BMap.InfoWindow(content, opt); // 创建信息窗口对象 
+		var infoWindow = new BMap.InfoWindow(content, opt); // 创建信息窗口对象
 		obj.openInfoWindow(infoWindow); //开启信息窗口
 	};
-	
+
 
 	/**
 	选择点的事件  返回地名 地址 lng lat
 	 */
 	function checkedPoint(title, address, lng, lat) {
-		
+
 		var _json={
 			"titel":title,
 			"address":address,
 			"lng":lng,
 			"lat":lat
 		};
-       
-         alert(JSON.stringify(_json));
+
+    alert(JSON.stringify(_json));
 		//console.log(title + "==" + address + "==" + lng + "==" + lat);
 	};
 
-	
+
 
 	function openPanel(index) {
 		var opts = {
@@ -205,9 +205,9 @@
 		content += '</tbody>';
 		content += '</table>';
 		content += '</div>';
-	
+
 		map.centerAndZoom(marker.point, 12);
-		var infoWindow = new BMap.InfoWindow(content, opts); // 创建信息窗口对象 
+		var infoWindow = new BMap.InfoWindow(content, opts); // 创建信息窗口对象
 		marker.openInfoWindow(infoWindow); //开启信息窗口
 
 	};
@@ -217,7 +217,7 @@
 
 		local
 				.setMarkersSetCallback(function(pois) {
-					
+
 					list = pois;
 					for (var i = 0; i < pois.length; i++) {
 						var opts = {
@@ -229,7 +229,7 @@
 						};
 
 						var marker = pois[i].marker;
-						
+
 						opts.title = '<p style="width:210px;font:bold 14px/16px arial,sans-serif;margin:0;color:#cc5522;white-space:nowrap;overflow:hidden" title="'+pois[i].title+'">'
 								+ pois[i].title
 								+ "<a target=\"_blank\" href=\"javascript:void(0)\" onclick=\"checkedPoint('"
@@ -253,7 +253,7 @@
 						content += '</tbody>';
 						content += '</table>';
 						content += '</div>';
-						
+
 						addClickHandler(content, marker, opts);
 					}
 
@@ -261,23 +261,24 @@
 					$("ol li:first").find("div").click();
 
 				});
-
+ console.log(local.getStatus()+"status"+BMAP_STATUS_UNKNOWN_LOCATION);
 		switch (local.getStatus()) {
 		case BMAP_STATUS_SUCCESS: //数据返回成功  0
 		{
-			//自定义列表显示  
+			//自定义列表显示
 			toList();
 			break;
 		}
-		case BMAP_STATUS_UNKNOWN_LOCATION: //数据无返回  
+		case BMAP_STATUS_UNKNOWN_LOCATION: //数据无返回2
 		{
 			console.log("没数据");
-			//var point = results.getPoi(0).point; //获取第一个点，并设置为中心  
-			//map.centerAndZoom(point, 17);
+      toList();
 			break;
 		}
-		default: {
-			break;
+		default: {//1
+			console.log("没数据");
+			toList();
+			return;
 		}
 		}
 		;
@@ -288,14 +289,17 @@
 			html += '<div style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 12px; line-height: normal; font-family: arial, sans-serif; border: 0px solid rgb(153, 153, 153);">';
 			html += '<div style="background: rgb(255, 255, 255);height: auto;overflow-y: auto;max-height: 280px;">';
 			html += '<ol style="list-style: none; padding: 0px; margin: 0px;">';
+
+
+
+
 			var length = results.getCurrentNumPois();
 
-			
 			var pageCount = results.getPageIndex(); //获取结果页数
-		
+
 			for (var i = 0, len = results.getCurrentNumPois(); i < len; i++) {
 				var poi = results.getPoi(i); //获取每一个智能搜索的结果
-				var img = -i * 25;
+				var img = -i * 25;//设置图片的像素
 				img += "px";
 				html += "<li style=\"margin: 2px 0px; padding: 0px 4px 0px 0px; cursor: pointer; overflow: hidden; line-height: 17px;\" >";
 				html += '<span style="background:url(http://api.map.baidu.com/images/markers.png) -23px '
@@ -312,11 +316,11 @@
 			html += '</ol></div>';
 
 			html += '<div style="white-space: nowrap; text-align: right; background: rgb(229, 236, 249); margin-top: 5px; padding: 2px; overflow: hidden; zoom: 1;">';
-			
+
 			html += '<div style=" margin-right: 5px;">';
-// 分页开始
-//上一页 
-	html += '<p style="margin:0;padding:0;white-space:nowrap">';
+	// 分页开始
+	//上一页
+		  html += '<p style="margin:0;padding:0;white-space:nowrap">';
 			if (pageCount == 0) {
 				html += '<span style="margin-right:3px">上一页</span>';
 			} else {
@@ -329,15 +333,14 @@
 		 我们需要计算页码列表的开始和结束位置，即两个变量begin和end
 			计算它们需要通过当前页码！
 			1. 总页数不足6页--> begin=1, end=最大页
-			2. 通过公式设置begin和end，begin=当前页-1，end=当前页+3
-			3. 如果begin<1，那么让begin=1，end=6
-			4. 如果end>tp, 让begin=tp-5, end=tp
+			2. 通过公式设置begin和end，begin=当前页-2，end=当前页+3
+			3. 如果begin<0，那么让begin=0，end=5
+			4. 如果end>tp, 让begin=max-5, end=max
 	 */
 
-			 
+
 	var begin = 0, end = 0;
 			numPage = results.getNumPages();
-			
 
 			if (results.getNumPages() <= 5) {
 				begin = 0;
@@ -359,7 +362,7 @@
 
 	/**********************************************
 		 计算begin和end
-		 如果总页数<=6，那么显示所有页码，即begin=1 end=${pb.tp}
+		 如果总页数<=5，那么显示所有页码，即begin=1 end=max
 		 设置begin=当前页码-2，end=当前页码+3
 		 如果begin<1，那么让begin=1 end=6
 		 如果end>最大页，那么begin=最大页-5 end=最大页
@@ -379,7 +382,7 @@
 	if (end < results.getNumPages()) {
 				html += "<span style=\"margin-right:3px\">...</span>";
 			}
-//下一页 
+//下一页
 	if (pageCount == results.getNumPages() - 1) {
 				html += "<span style=\"margin-right:3px\">下一页</span>";
 			} else {
@@ -387,7 +390,7 @@
 						+ (pageCount + 1) + ");\">下一页</a></span>";
 			}
 /*
- *共N页 到M页 
+ *共N页 到M页
  */
 	html += "<span style=\"margin-right:3px\">共"
 					+ results.getNumPages() + "页</span>";
@@ -425,13 +428,11 @@
 				$(this).unbind("mouseout");
 				$(this).unbind("mouseover");
 
-
-
-     var li_height = $(this).parents("li").position().top,//获取当前选中div的li元素的距离ol的高，不包括margin
+        var li_height = $(this).parents("li").position().top,//获取当前选中div的li元素的距离ol的高，不包括margin
         div_height = $(this).parents("div").scrollTop();//获取div的滚动条高度
-      
+
 				li_height+=div_height;
-				if(li_height>280)li_height=300;
+				//if(li_height>280)li_height=300;
 				$(this).parents("div").animate({
 								scrollTop : li_height
 				}, 800);
@@ -449,7 +450,7 @@
 	var local = new BMap.LocalSearch(map, {
 		renderOptions : {
 			map : map,
-			//panel: "cards-level1",//结果容器id  
+			//panel: "cards-level1",//结果容器id
 			autoViewport : true,
 			selectFirstResult : false
 		},
@@ -464,14 +465,24 @@
 		local.search($("#sole-input").val());
 	});
 
-	
+	/**
+	 * 给close添加点击事件
+	 */
+	$(".input-clear").on("click", function() {
+		$("#sole-input").val("");
+		map.clearOverlays(); //清除地图上所有覆盖物
+		myCity.get(Fun); // 初始化地图,设置城市和地图级别。
+		$("#cards-level1").html("");
+		$(this).hide();
+	});
+
 	//回车查询事件
 	$('#sole-input').keydown(function(e) {
 		if (e.keyCode == 13) {
 			local.search($("#sole-input").val());//处理事件
 		}
 	});
-	
+
 	/**
 	分页
 	 */
@@ -486,25 +497,16 @@
 			alert('请输入正确的页码！');
 			return;
 		}
-		local.gotoPage(parseInt(pc - 1)); //切换指定页  
+		local.gotoPage(parseInt(pc - 1)); //切换指定页
 	};
 
 	function ListtoPage(index) {
-		
-		map.clearOverlays(); //清除标点  
-		local.gotoPage(index); //切换指定页  
+
+		map.clearOverlays(); //清除标点
+		local.gotoPage(index); //切换指定页
 	}
 
-	/**
-	 * 给close添加点击事件
-	 */
-	$(".input-clear").on("click", function() {
-		$("#sole-input").val("");
-		map.clearOverlays(); //清除地图上所有覆盖物
-		map.centerAndZoom("北京", 12); // 初始化地图,设置城市和地图级别。
-		$("#cards-level1").html("");
-		$(this).hide();
-	});
+
 
 	/**********************************************
 	 @function	IE6-9 placeholder与textarea的maxlength修复，并提供值改变时的回调函数供实时捕捉用户输入
@@ -627,7 +629,7 @@
 			$(".input-clear").hide();
 		}
 		$("#cards-level1").html("");
-		
+
 	});
 </script>
 
