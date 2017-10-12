@@ -24,6 +24,8 @@
 #r-result {
 	width: 100%;
 }
+
+.anchorBL{display:none;}
 </style>
 
 <title>Baidu Map Demo</title>
@@ -224,6 +226,11 @@
 		local
 				.setMarkersSetCallback(function(pois) {
 
+if(local.getStatus()!=BMAP_STATUS_SUCCESS){
+return ;
+}
+
+
 					list = pois;
 					for (var i = 0; i < pois.length; i++) {
 						var opts = {
@@ -267,7 +274,7 @@
 					$("ol li:first").find("div").click();
 
 				});
- console.log(local.getStatus()+"status"+BMAP_STATUS_UNKNOWN_LOCATION);
+ //console.log(local.getStatus()+"status"+BMAP_STATUS_UNKNOWN_LOCATION);
 		switch (local.getStatus()) {
 		case BMAP_STATUS_SUCCESS: //数据返回成功  0
 		{
@@ -277,17 +284,42 @@
 		}
 		case BMAP_STATUS_UNKNOWN_LOCATION: //数据无返回2
 		{
-			console.log("没数据");
-      toList();
+			//console.log("没数据");
+      		noResult();
 			break;
 		}
 		default: {//1
-			console.log("没数据");
-			toList();
+			//console.log("没数据");
+			//toList();
 			return;
 		}
 		}
 		;
+
+function noResult(){
+			var html = "";
+			$("#cards-level1").html("");
+			
+			html += '<div style="background: rgb(255, 255, 255);height: auto;overflow-y: auto;max-height: 280px;">';
+			html += '<ol style="list-style: none; padding: 0px; margin: 0px;">';
+
+html += "<li style=\"margin: 2px 0px; padding: 0px 4px 0px 0px; cursor: pointer; overflow: hidden; line-height: 17px;\" >";
+				
+				html += "<div style=\"zoom: 1; overflow: hidden; padding: 0px 5px;\" >";
+				html += '<div style="line-height:30px;font-size:12px;"><span style="color:#7777cc;"><b>'
+						+ '暂无数据' + '</b></span></div>';
+				
+				html += '</div></li>';
+
+html += '</ol></div>';
+
+$("#cards-level1").html(html);
+}
+
+
+
+
+
 
 		function toList() {
 			var html = "";
@@ -496,7 +528,7 @@
 	 */
 	function _go() {
 		var pc = $("#pageCode").val();//获取文本框中的当前页码
-		console.log("pc==" + pc);
+		//console.log("pc==" + pc);
 		if (!/^[1-9]\d*$/.test(pc)) {//对当前页码进行整数校验
 			alert('请输入正确的页码！');
 			return;
